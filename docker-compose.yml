@@ -1,0 +1,32 @@
+version: '3.4'
+services:
+  user-service:
+    build: .
+    container_name: my-password
+    restart: always
+    depends_on:
+      - mysql
+    #Config ip for container, you can remove if It's not necessary
+    networks:
+      keycloak_network:
+        ipv4_address: 172.30.0.2
+
+  mysql:
+    image: mysql
+    container_name: my-password-mysql
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/log:/var/log/mysql
+    environment:
+      MYSQL_DATABASE: my-password
+      MYSQL_ROOT_PASSWORD: "Q4BJm9lwPlWGZUkn9uCc"
+      character-set-server: utf8mb4
+      collation-server: utf8mb4_unicode_ci
+    restart: always
+
+networks:
+  keycloak_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.0.0/16

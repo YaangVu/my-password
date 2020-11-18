@@ -1,0 +1,24 @@
+spring.jpa.hibernate.ddl-auto=update
+spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:3306/my-password?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Ho_Chi_Minh
+spring.datasource.username={{___}}
+spring.datasource.password={{___}}
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=truew
+
+#Keycloak config
+keycloak.realm={{___}}
+keycloak.auth-server-url={{___}}
+keycloak.ssl-required=external
+keycloak.resource={{___}}
+keycloak.credentials.secret={{___}}
+keycloak.use-resource-role-mappings=true
+keycloak.bearer-only=true
+keycloak.enabled=true
+
+#Sentry config
+sentry.dsn={{___}}
+sentry.send-default-pii=true
+sentry.logging.minimum-event-level=info
+sentry.logging.minimum-breadcrumb-level=debug
+sentry.environment=release
+sentry.release=1.0.0
