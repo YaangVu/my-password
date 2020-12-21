@@ -3,6 +3,7 @@ package com.yaangvu.mypassword.services.imp;
 import com.yaangvu.mypassword.models.Domain;
 import com.yaangvu.mypassword.repositories.DomainRepository;
 import com.yaangvu.mypassword.services.DomainService;
+import com.yaangvu.mypassword.utils.Translation;
 import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class DomainServiceImp implements DomainService {
         domain.setUpdatedAt(new Date());
         domain.setCreatedBy(userService.getOrAddCurrentUser());
         repository.save(domain);
-        log.info("{} Add new Domain: {}", new Date(), domain);
+        log.info("Add new Domain: {}", domain);
         
         return domain;
     }
@@ -50,7 +51,15 @@ public class DomainServiceImp implements DomainService {
     
     @Override
     public Optional<Domain> find(Integer id) throws NotFoundException {
-        return repository.findById(id);
+        
+        Optional<Domain> domain = repository.findById(id);
+        log.info("Find Domain by ID: {}, result: {}", id, domain);
+        
+        if (domain.isPresent())
+            return domain;
+        else
+            throw new NotFoundException(Translation.trans("domain.not-found") + ": " + id);
+        
     }
     
     @Override
@@ -59,7 +68,7 @@ public class DomainServiceImp implements DomainService {
     }
     
     public Domain findOrAdd(String url) throws URISyntaxException {
-        log.info("{} Find Or Add Domain: {}", new Date(), url);
+        log.info("Find Or Add Domain: {}", url);
         
         //get domain from url
         String domainName = getDomainName(url);

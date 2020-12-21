@@ -60,6 +60,16 @@ public class ExHandler {
         return errorResponse.getResponse();
     }
     
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<Map<String, Object>> handleForbiddenExceptions(ForbiddenException ex) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ex.getLocalizedMessage());
+        errorResponse.setCode(HttpStatus.FORBIDDEN.value());
+        errorResponse.setHttpStatus(HttpStatus.FORBIDDEN);
+        
+        return errorResponse.getResponse();
+    }
+    
     //    @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleExceptions(Exception ex) {
         ErrorResponse errorResponse = new ErrorResponse();

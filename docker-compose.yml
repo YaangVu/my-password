@@ -12,8 +12,6 @@ services:
       character-set-server: utf8mb4
       collation-server: utf8mb4_unicode_ci
     restart: always
-    networks:
-      - my-password
 
   my-password:
     build: .
@@ -25,14 +23,7 @@ services:
       - mysql
     volumes:
       - ./logs:/app/logs
-    #Config ip for container, you can remove if It's not necessary
-    networks:
-      my-password:
-        ipv4_address: 172.30.0.3
-
-networks:
-  my-password:
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.30.0.0/16
+    ports:
+      - 172.31.1.134:8080:8080
+      # or use public port over public network
+      #- 8080:8080

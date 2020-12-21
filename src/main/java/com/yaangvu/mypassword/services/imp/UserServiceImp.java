@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -33,7 +34,7 @@ public class UserServiceImp implements UserService {
         user.setCreatedAt(new Date());
         user.setUpdatedAt(new Date());
         repository.save(user);
-        log.info("{} Add new User: {}", new Date(), user);
+        log.info("Add new User: {}", user);
         
         return user;
     }
@@ -65,7 +66,10 @@ public class UserServiceImp implements UserService {
      */
     public User getOrAddCurrentUser() {
         String userId = accessToken.getSubject();
-        log.info("{} Get Current User by userId: {}", new Date(), userId);
+        log.info("Get Current User by userId: {}", userId);
+        AccessToken.Access access = accessToken.getRealmAccess();
+        Set<String> roles = access.getRoles();
+        log.info("Role of Current User: {}", roles);
         
         User user = repository.findUserByUserId(userId);
         if (user == null) {
@@ -99,7 +103,7 @@ public class UserServiceImp implements UserService {
             return null;
         
         String userId = accessToken.getSubject();
-        log.info("{} Get Current User by userId: {}", new Date(), userId);
+        log.info("Get Current User by userId: {}", userId);
         
         return repository.findUserByUserId(userId);
     }

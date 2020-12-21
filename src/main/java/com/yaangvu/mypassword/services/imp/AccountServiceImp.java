@@ -1,5 +1,6 @@
 package com.yaangvu.mypassword.services.imp;
 
+import com.yaangvu.mypassword.handler.ForbiddenException;
 import com.yaangvu.mypassword.models.Account;
 import com.yaangvu.mypassword.models.Domain;
 import com.yaangvu.mypassword.repositories.AccountRepository;
@@ -39,7 +40,7 @@ public class AccountServiceImp implements AccountService {
         account.setUpdatedAt(new Date());
         account.setCreatedBy(userService.getOrAddCurrentUser());
         repository.save(account);
-        log.info("{} Add new Account: {}", new Date(), account);
+        log.info("Add new Account: {}", account);
         
         return account;
     }
@@ -52,7 +53,7 @@ public class AccountServiceImp implements AccountService {
     public Account update(@Valid Account account) {
         account.setUpdatedAt(new Date());
         repository.save(account);
-        log.info("{} Update Account: {}", new Date(), account);
+        log.info("Update Account: {}", account);
         
         return account;
     }
@@ -63,19 +64,23 @@ public class AccountServiceImp implements AccountService {
     }
     
     @Override
-    public Optional<Account> find(Integer id) throws NotFoundException {
+    public Optional<Account> find(Integer id) throws NotFoundException, ForbiddenException {
         Optional<Account> account = repository.findById(id);
-        log.info("{} Find Account by ID: {}, result: {}", new Date(), id, account);
+        log.info("Find Account by ID: {}, result: {}", id, account);
         
         if (account.isPresent())
-            return repository.findById(id);
+            // If account of current user then return account. Else throw ForbiddenException
+            if (userService.getOrAddCurrentUser().getUserId().equals(account.get().getCreatedBy().getId()))
+                return account;
+            else
+                throw new ForbiddenException(Translation.trans("forbidden"));
         else
             throw new NotFoundException(Translation.trans("account.not-found") + ": " + id);
     }
     
     @Override
     public Page<Account> findAll(Pageable pageable) {
-        return null;
+        return repository.findAllByCreatedBy(userService.getOrAddCurrentUser(), pageable);
     }
     
     /**
@@ -86,12 +91,12 @@ public class AccountServiceImp implements AccountService {
      * @throws URISyntaxException Exception
      */
     public void addOrUpdate(@Valid AccountReqDto accountReqDto) throws URISyntaxException {
-        log.info("{} Add Or Update Account: {}", new Date(), accountReqDto);
+        log.info("Add Or Update Account: {}", accountReqDto);
         
         Domain domain = domainService.findOrAdd(accountReqDto.getUrl());
         Account account = repository.findByDomainAndUsername(domain, accountReqDto.getUsername());
         String encryptionKey = userService.getOrAddCurrentUserEncryptionKey();
-    
+        
         if (account == null) {
             account = new Account();
             account.setDomain(domain);
