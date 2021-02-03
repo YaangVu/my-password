@@ -43,7 +43,7 @@ dependencies {
     // https://mvnrepository.com/artifact/io.springfox/springfox-boot-starter
     compile group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
     // https://mvnrepository.com/artifact/org.keycloak/keycloak-spring-boot-starter
-    compile group: 'org.keycloak', name: 'keycloak-spring-boot-starter', version: '11.0.3'
+    compile group: 'org.keycloak', name: 'keycloak-spring-boot-starter', version: '12.0.2'
 
 }
 

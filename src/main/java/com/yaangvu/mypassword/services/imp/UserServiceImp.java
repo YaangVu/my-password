@@ -66,7 +66,7 @@ public class UserServiceImp implements UserService {
      */
     public User getOrAddCurrentUser() {
         String userId = accessToken.getSubject();
-        log.info("Get Current User by userId: {}", userId);
+        log.info("getOrAddCurrentUser Current User by userId: {}", userId);
         AccessToken.Access access = accessToken.getRealmAccess();
         Set<String> roles = access.getRoles();
         log.info("Role of Current User: {}", roles);
